@@ -60,6 +60,7 @@ details{margin:8px 0;border-top:1px solid var(--line);padding-top:6px}summary{cu
 #wel{position:fixed;inset:0;z-index:20;background:rgba(10,14,28,.97);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}#wel[hidden]{display:none}
 .wp{max-width:460px;width:100%;text-align:center}.wp .brand{margin:0 auto 10px}.wp .now{justify-content:center;flex-direction:column;align-items:center;gap:2px}.wp .now b{font-size:3.4rem}.wp label{text-align:left}
 #who{font:600 1.2rem var(--body)}#who button{padding:3px 10px;font-size:.85rem;margin-left:8px}
+#auth{position:fixed;inset:0;z-index:30;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}.wp .brand{margin:0 auto 10px}#auth .wp{text-align:left}#auth h2,#auth .brand{text-align:center}#auth .fld{margin-bottom:12px}#aMsg{color:var(--warn);min-height:1.4em;margin:6px 0}
 </style>
 </head>
 <body>
@@ -87,6 +88,7 @@ details{margin:8px 0;border-top:1px solid var(--line);padding-top:6px}summary{cu
 <p id="who" style="margin:0 0 6px"></p>
 <div class="now"><b id="nowT"></b><span id="nowD"></span></div>
 <p id="stat" class="meta"></p>
+<p id="vis" class="meta" style="margin:-8px 0 14px;color:var(--acc)"></p>
 <nav role="tablist" id="tabs"></nav>
 
 <section id="t-sess"><h2>Misión de hoy</h2><div id="sess"></div></section>
@@ -135,6 +137,7 @@ details{margin:8px 0;border-top:1px solid var(--line);padding-top:6px}summary{cu
 </div>
 
 <div id="t-data">
+<section><h2>Visitantes de la página</h2><p class="note" id="visMsg" style="margin:0" role="status"></p></section>
 <section><h2>Calendario y app</h2>
 <div class="row"><div><button class="main" id="ics">Exportar a mi calendario (.ics)</button></div><div><button id="inst" hidden>Instalar como app</button></div></div>
 <p class="note">El calendario crea tus misiones semanales con aviso 30 minutos antes y funciona en Google Calendar, iPhone y Outlook. En iPhone, para instalar la app usa Compartir y luego Añadir a pantalla de inicio.</p></section>
@@ -162,7 +165,73 @@ details{margin:8px 0;border-top:1px solid var(--line);padding-top:6px}summary{cu
 
 <script>
 (function(){
-var KEY="plan-volumen-v2",DN=["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
+var UK="hg-users",SK="hg-session",LEG="plan-volumen-v2";
+function J(k){try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}}
+var users=J(UK)||{},cur=null;
+try{cur=localStorage.getItem(SK)}catch(e){}
+if(cur&&users[cur]){window.HG_USER=cur;window.HG_NAME=users[cur].name||"";return}
+var enc=new TextEncoder();
+function hex(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0")}).join("")}
+function kdf(pw,salt){return crypto.subtle.importKey("raw",enc.encode(pw),"PBKDF2",false,["deriveBits"]).then(function(k){return crypto.subtle.deriveBits({name:"PBKDF2",salt:enc.encode(salt),iterations:150000,hash:"SHA-256"},k,256)}).then(hex)}
+function rnd(){var a=new Uint8Array(12);crypto.getRandomValues(a);return hex(a)}
+function pid(pw){return kdf(pw,"hg-pass-id").then(function(x){return"pw:"+x.slice(0,24)})}
+var logo=document.querySelector("header .brand"),d=document.createElement("div");
+d.id="auth";d.setAttribute("role","dialog");d.setAttribute("aria-modal","true");d.setAttribute("aria-labelledby","aH");
+d.innerHTML='<div class="wp">'+(logo?logo.outerHTML:"")+'<h2 id="aH">Entrar</h2><form id="af"><div class="fld" id="aNw" hidden><label for="aN">Tu nombre (opcional)</label><input id="aN" maxlength="30" autocomplete="given-name"></div><div class="fld"><label for="aE">Correo</label><input id="aE" type="email" autocomplete="username" autocapitalize="off"></div><div class="fld"><label for="aP">Contraseña</label><input id="aP" type="password" autocomplete="current-password"></div><p class="note" id="aHint" style="margin:0 0 8px"></p><p id="aMsg" role="alert"></p><button class="main" type="submit" id="aGo" style="width:100%">Entrar</button><p style="text-align:center;margin:12px 0 0"><button type="button" id="aT">Crear cuenta nueva</button></p></form><p class="note" style="text-align:center">Las cuentas se guardan solo en este dispositivo y navegador.</p></div>';
+document.body.appendChild(d);
+var reg=false;
+function $(i){return document.getElementById(i)}
+function say(t){$("aMsg").textContent=t}
+function mode(){
+ $("aH").textContent=reg?"Crear cuenta":"Entrar";$("aGo").textContent=reg?"Crear cuenta":"Entrar";$("aT").textContent=reg?"Ya tengo cuenta":"Crear cuenta nueva";
+ $("aNw").hidden=!reg;$("aP").autocomplete=reg?"new-password":"current-password";say("");
+ $("aHint").textContent=reg?"Escribe tu correo, tu contraseña o ambos. Con los dos tu cuenta queda mejor protegida.":"Entra con tu correo y contraseña, solo con el correo o solo con la contraseña, según cómo creaste tu cuenta.";
+}
+function enter(id){try{localStorage.setItem(SK,id)}catch(x){}location.reload()}
+function register(em,pw,nm){
+ (pw&&!em?pid(pw):Promise.resolve(em)).then(function(id){
+  if(users[id]){say(em?"Ya existe una cuenta con ese correo.":"Esa contraseña ya está en uso. Elige otra.");return}
+  var u={email:em,name:nm,mode:em&&pw?"both":em?"email":"pass",created:Date.now()};
+  var p=Promise.resolve();
+  if(u.mode==="both"){u.salt=rnd();p=kdf(pw,u.salt).then(function(x){u.hash=x})}
+  return p.then(function(){
+   users[id]=u;
+   try{
+    if(Object.keys(users).length===1){var old=localStorage.getItem(LEG);if(old)localStorage.setItem(LEG+":"+id,old)}
+    localStorage.setItem(UK,JSON.stringify(users));localStorage.setItem(SK,id);
+   }catch(x){say("No se pudo guardar la cuenta en este navegador.");return}
+   location.reload();
+  });
+ }).catch(function(){say("Algo falló. Inténtalo otra vez.")});
+}
+function login(em,pw){
+ if(em){
+  var u=users[em];
+  if(!u||u.mode==="pass"){say("No encuentro una cuenta con ese correo.");return}
+  if(u.mode==="email"){enter(em);return}
+  if(!pw){say("Esta cuenta necesita también la contraseña.");return}
+  kdf(pw,u.salt).then(function(x){if(x===u.hash)enter(em);else say("Correo o contraseña incorrectos.")});return;
+ }
+ pid(pw).then(function(id){if(users[id])enter(id);else say("No encuentro una cuenta con esa contraseña.")});
+}
+$("aT").addEventListener("click",function(){reg=!reg;mode()});
+$("af").addEventListener("submit",function(e){
+ e.preventDefault();say("");
+ var em=$("aE").value.trim().toLowerCase(),pw=$("aP").value,nm=$("aN").value.trim().slice(0,30);
+ if(!window.crypto||!crypto.subtle){say("Tu navegador no permite cuentas aquí. Abre la página desde su dirección https.");return}
+ if(!em&&!pw){say("Escribe tu correo, tu contraseña o ambos.");return}
+ if(em&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){say("El correo no parece válido.");return}
+ if(pw&&pw.length<6){say("La contraseña debe tener al menos 6 caracteres.");return}
+ if(reg)register(em,pw,nm);else login(em,pw);
+});
+mode();$("aE").focus();
+})();
+</script>
+
+<script>
+(function(){
+if(!window.HG_USER)return;
+var KEY="plan-volumen-v2:"+window.HG_USER,DN=["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
 var EX={
 fullA:["Full body A",[["Sentadilla",4,"6-8","Baja controlado, rodillas alineadas con los pies"],["Press banca",4,"6-8","Escápulas juntas, pies firmes"],["Remo con barra",3,"8-10","Espalda neutra, tira hacia el ombligo"],["Press militar con mancuernas",3,"8-10","Abdomen apretado"],["Curl de bíceps",2,"10-12","Sin balancear el cuerpo"],["Plancha",3,"30-45 s","Cuerpo en línea recta"]]],
 fullB:["Full body B",[["Peso muerto rumano",4,"6-8","Cadera atrás, barra pegada a las piernas"],["Press inclinado con mancuernas",4,"8-10","Baja hasta sentir estiramiento"],["Dominadas o jalón al pecho",4,"8-10","Lleva el pecho a la barra"],["Zancadas",3,"10-12","Paso largo y tronco erguido"],["Elevaciones laterales",3,"12-15","Codos ligeramente flexionados"],["Extensión de tríceps",2,"10-12","Codos quietos"]]],
@@ -179,6 +248,7 @@ var S=fresh();
 try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&typeof p==="object")S=Object.assign(fresh(),p)}
  else{var o=JSON.parse(localStorage.getItem("plan-volumen-v1")||"null");if(o){S=Object.assign(fresh(),{xp:o.xp||0,peso:o.peso||60,meta:o.meta||68,mins:o.mins||60,dias:o.dias||S.dias});(o.log||[]).forEach(function(e){S.wlog.push({t:Date.now(),d:e.d,w:e.w})})}}}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+if(!S.name&&window.HG_NAME)S.name=window.HG_NAME;
 function $(id){return document.getElementById(id)}
 function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function fmt(n){return Number(n).toLocaleString("es",{maximumFractionDigits:1})}
@@ -560,14 +630,24 @@ function welcome(){
 }
 function renderWho(){
  var n=S.name,lv=Math.floor(S.xp/200)+1;
- $("who").innerHTML='Jugador: <b>'+(n?esc(n):"sin nombre")+'</b> · Nivel '+lv+'<button type="button" id="chgName">'+(n?"Cambiar":"Poner nombre")+'</button>';
+ $("who").innerHTML='Jugador: <b>'+(n?esc(n):"sin nombre")+'</b> · Nivel '+lv+'<button type="button" id="chgName">'+(n?"Cambiar":"Poner nombre")+'</button><button type="button" id="logout">Salir</button><span class="meta" style="display:block;font-weight:400;font-size:.88rem">Cuenta: '+esc(window.HG_USER.indexOf("pw:")===0?"con contraseña":window.HG_USER)+'</span>';
  if(document.activeElement!==$("nm"))$("nm").value=n||"";
 }
-$("who").addEventListener("click",function(e){if(e.target.id==="chgName"){tab="plan";renderTabs();$("nm").focus();$("nm").scrollIntoView({block:"center"})}});
+$("who").addEventListener("click",function(e){if(e.target.id==="logout"){try{localStorage.removeItem("hg-session")}catch(x){}location.reload();return}if(e.target.id==="chgName"){tab="plan";renderTabs();$("nm").focus();$("nm").scrollIntoView({block:"center"})}});
 $("nm").addEventListener("change",function(){S.name=$("nm").value.trim().slice(0,30);save();renderWho()});
+var GC=""; /* Pon aquí tu código de GoatCounter entre las comillas, por ejemplo "hannielgamers" */
+function visitors(){
+ if(!/^[a-z0-9-]+$/i.test(GC)){$("visMsg").textContent="El contador todavía no está activado. Crea tu cuenta gratis en goatcounter.com, copia tu código y pégalo en la variable GC dentro de index.html.";return}
+ if(!/^https?:/.test(location.protocol)){$("visMsg").textContent="El contador solo funciona cuando la página está publicada en internet.";return}
+ var s=document.createElement("script");s.async=true;s.dataset.goatcounter="https://"+GC+".goatcounter.com/count";s.src="https://gc.zgo.at/count.v5.js";document.head.appendChild(s);
+ fetch("https://"+GC+".goatcounter.com/counter/TOTAL.json").then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
+  $("vis").textContent="Visitantes de la página: "+(d.count_unique||d.count);
+  $("visMsg").textContent="Visitantes únicos: "+(d.count_unique||"sin datos")+" · Visitas totales: "+d.count+". Se actualiza cada 30 minutos aproximadamente. Las visitas se cuentan de forma anónima y sin cookies.";
+ }).catch(function(){$("visMsg").textContent="No se pudo leer el contador. En GoatCounter, entra a Settings y activa «Allow adding visitor counts on your website»."});
+}
 setInterval(clock,1000);setInterval(renderStatus,60000);
 function render(){renderXP();renderPlan();renderSession();renderProg();renderLib();renderMeas();renderAch();renderMus();renderStatus();renderWho()}
-bindInputs();sessEvents();renderTabs();render();clock();welcome();
+bindInputs();sessEvents();renderTabs();render();clock();welcome();visitors();
 })();
 </script>
 </body>
