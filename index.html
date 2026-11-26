@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hanniel Gamers · Plan de volumen</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpolygon points='60,8 105,34 105,86 60,112 15,86 15,34' fill='%230E1430' stroke='%2322E3FF' stroke-width='6'/%3E%3Cpath d='M40 46h40a14 14 0 0 1 13 20l-4 8a7 7 0 0 1-12 1l-3-5H46l-3 5a7 7 0 0 1-12-1l-4-8a14 14 0 0 1 13-20z' fill='%238B5CF6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#0A0E1C;--panel:#121835;--ink:#EAF0FF;--mute:#93A0C8;--line:#263059;--acc:#22E3FF;--acc-ink:#04101A;--mag:#FF3DCB;--warn:#FFB84D;--ok:#7CFF8A;
+--disp:"Barlow Condensed","Arial Narrow",Impact,sans-serif;--body:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;font:16px/1.5 var(--body);color:var(--ink);background:var(--bg);padding:max(16px,env(safe-area-inset-top)) 16px max(32px,env(safe-area-inset-bottom))}
+main{max-width:980px;margin:0 auto}
+h1,h2,h3{font-family:var(--disp);font-weight:700;line-height:1.05;margin:0}
+.brand{display:block;width:min(100%,460px);height:auto;margin:20px 0 6px;filter:drop-shadow(0 0 14px rgba(34,227,255,.35))}
+.xp{max-width:460px;margin:0 0 20px}.xp p{margin:0 0 6px;font:600 1.1rem var(--disp);letter-spacing:.04em}
+.bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--mag));transition:width .4s}
+h1{position:absolute;left:-9999px}
+h2{font-size:1.9rem;margin-bottom:14px}
+h3{font-size:1.35rem}
+.lead{max-width:60ch;color:var(--mute);margin:0 0 28px}
+section{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--mag);border-radius:10px;padding:22px;margin-bottom:18px}
+label{display:block;font-size:.88rem;color:var(--mute);margin-bottom:4px}
+input[type=number],input[type=time],input[type=date]{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 10px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+button{font:inherit;font-weight:600;cursor:pointer;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:9px 14px}
+button.main{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.days{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.days button[aria-pressed=true]{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.times{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.note{color:var(--mute);font-size:.92rem;margin:10px 0 0}
+.warn{color:var(--warn)}
+.cards{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.card{border:1px solid var(--line);border-radius:10px;padding:16px}
+.card.done{border-color:var(--ok)}
+.meta{color:var(--mute);font-size:.9rem;margin:4px 0 10px}
+.ex{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--line)}
+.ex input{margin-top:5px;width:18px;height:18px;accent-color:var(--acc)}
+.ex span b{font-weight:600}
+.ex small{display:block;color:var(--mute)}
+.stats{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.stat{border-left:4px solid var(--acc);padding-left:12px}
+.stat strong{display:block;font:700 2.2rem/1 var(--disp)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:14px}
+.row>div{flex:1 1 130px}
+svg{width:100%;height:auto;display:block}
+ul.tips{margin:0;padding-left:20px}ul.tips li{margin-bottom:8px;max-width:70ch}
+.log{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.log span{border:1px solid var(--acc);border-radius:999px;padding:3px 10px;font-size:.88rem}
+@media (prefers-reduced-motion:no-preference){.card{transition:border-color .2s}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<svg class="brand" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 120" role="img" aria-label="Hanniel Gamers">
+<defs>
+<linearGradient id="hgA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22E3FF"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient>
+<linearGradient id="hgB" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#BFC9FF"/></linearGradient>
+</defs>
+<polygon points="60,8 105,34 105,86 60,112 15,86 15,34" fill="#0E1430" stroke="url(#hgA)" stroke-width="4" stroke-linejoin="round"/>
+<path d="M40 46h40a14 14 0 0 1 13 20l-4 8a7 7 0 0 1-12 1l-3-5H46l-3 5a7 7 0 0 1-12-1l-4-8a14 14 0 0 1 13-20z" fill="url(#hgA)"/>
+<rect x="40" y="57" width="12" height="4" rx="1" fill="#0E1430"/><rect x="44" y="53" width="4" height="12" rx="1" fill="#0E1430"/>
+<circle cx="74" cy="56" r="3.2" fill="#0E1430"/><circle cx="81" cy="62" r="3.2" fill="#0E1430"/>
+<g font-family="'Barlow Condensed','Arial Narrow',Impact,sans-serif" font-weight="700">
+<text x="133" y="75" font-size="66" fill="#FF3DCB" textLength="270" lengthAdjust="spacingAndGlyphs">HANNIEL</text>
+<text x="130" y="72" font-size="66" fill="url(#hgB)" textLength="270" lengthAdjust="spacingAndGlyphs">HANNIEL</text>
+<rect x="130" y="80" width="270" height="3" fill="#FF3DCB"/>
+<text x="130" y="109" font-size="28" fill="#22E3FF" textLength="270" lengthAdjust="spacing">GAMERS</text>
+</g>
+</svg>
+<h1>Hanniel Gamers · Plan de volumen</h1>
+<div class="xp"><p id="xpText">Nivel 1 · 0 XP</p><div class="bar" role="progressbar" aria-label="Progreso al siguiente nivel" aria-valuemin="0" aria-valuemax="200" id="xpBar"><i id="xpFill"></i></div></div>
+<p class="lead">Entrena como juegas: elige tus misiones, gana XP con cada ejercicio y sube de nivel. Todo se guarda en tu navegador.</p>
+</header>
+
+<section>
+<h2>1. Tus stats</h2>
+<div class="grid">
+<div><label for="peso">Peso actual (kg)</label><input id="peso" type="number" step="0.1" min="30" max="250"></div>
+<div><label for="meta">Peso meta (kg)</label><input id="meta" type="number" step="0.1" min="30" max="250"></div>
+<div><label for="mins">Minutos por sesión</label><input id="mins" type="number" step="5" min="30" max="150"></div>
+</div>
+<p class="note">Subir de peso con músculo es un proceso lento: apunta a ganar entre 0,25 y 0,5 kg por semana.</p>
+</section>
+
+<section>
+<h2>2. Calendario de misiones</h2>
+<p class="note" style="margin:0 0 12px">Elige entre 2 y 6 días de entrenamiento y la hora de cada uno.</p>
+<div class="days" id="days" role="group" aria-label="Días de entrenamiento"></div>
+<div class="times" id="times"></div>
+<p class="note" id="weekNote"></p>
+</section>
+
+<section>
+<h2>3. Misiones de la semana</h2>
+<div class="cards" id="routine"></div>
+<p class="note"><button id="resetWeek">Cerrar semana y guardar XP</button></p>
+</section>
+
+<section>
+<h2>4. Recursos y progreso</h2>
+<div class="stats" id="stats"></div>
+<p class="note">Son estimaciones. Si en 3 semanas no subes de peso, añade unas 150 kcal al día; si subes más de 0,7 kg por semana, réstalas.</p>
+<h3 style="margin-top:22px">Registro de peso</h3>
+<div class="row">
+<div><label for="logW">Peso de hoy (kg)</label><input id="logW" type="number" step="0.1" min="30" max="250"></div>
+<div><button class="main" id="addLog">Guardar peso</button></div>
+</div>
+<div id="chart"></div>
+<div class="log" id="logList"></div>
+</section>
+
+<section>
+<h2>5. Trucos de pro</h2>
+<ul class="tips">
+<li>Sobrecarga progresiva: cuando llegues al máximo de repeticiones de todas las series con buena técnica, sube el peso entre 2 y 5 %.</li>
+<li>Deja 1 o 2 repeticiones en reserva en la mayoría de series; la última serie de cada ejercicio puede ser más cercana al fallo.</li>
+<li>Duerme entre 7 y 9 horas: el músculo se construye en el descanso, no en el gimnasio.</li>
+<li>Proteína repartida en 3 o 4 comidas, y carbohidratos antes de entrenar para rendir mejor.</li>
+<li>Cada 6 u 8 semanas, haz una semana más suave (mismas rutinas, 40 % menos series) para recuperarte.</li>
+<li>Si tienes dolor articular o alguna condición médica, consulta a un profesional antes de empezar.</li>
+</ul>
+</section>
+</main>
+
+<script>
+(function(){
+var DN=["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
+var KEY="plan-volumen-v1";
+// [nombre, series, repeticiones, consejo]
+var EX={
+fullA:["Full body A",[["Sentadilla",4,"6-8","Baja controlado, rodillas alineadas con los pies"],["Press banca",4,"6-8","Escápulas juntas, pies firmes"],["Remo con barra",3,"8-10","Espalda neutra, tira hacia el ombligo"],["Press militar con mancuernas",3,"8-10","Abdomen apretado"],["Curl de bíceps",2,"10-12","Sin balancear el cuerpo"],["Plancha",3,"30-45 s","Cuerpo en línea recta"]]],
+fullB:["Full body B",[["Peso muerto rumano",4,"6-8","Cadera atrás, barra pegada a las piernas"],["Press inclinado con mancuernas",4,"8-10","Baja hasta sentir estiramiento"],["Dominadas o jalón al pecho",4,"8-10","Lleva el pecho a la barra"],["Zancadas",3,"10 por pierna","Paso largo y tronco erguido"],["Elevaciones laterales",3,"12-15","Codos ligeramente flexionados"],["Extensión de tríceps",2,"10-12","Codos quietos"]]],
+fullC:["Full body C",[["Prensa de piernas",4,"8-10","Sin bloquear las rodillas arriba"],["Fondos o press cerrado",3,"8-10","Controla la bajada"],["Remo con mancuerna",3,"10 por lado","Codo cerca del cuerpo"],["Hip thrust",3,"8-10","Pausa de 1 s arriba"],["Face pull",3,"12-15","Hombros atrás y abajo"],["Elevación de talones",3,"12-15","Rango completo"]]],
+torso:["Torso",[["Press banca",4,"6-8","Escápulas juntas"],["Remo con barra",4,"6-8","Espalda neutra"],["Press militar",3,"8-10","Abdomen apretado"],["Jalón al pecho",3,"8-12","Pecho arriba"],["Curl de bíceps",3,"10-12","Control en la bajada"],["Extensión de tríceps",3,"10-12","Codos quietos"]]],
+pierna:["Pierna",[["Sentadilla",4,"6-8","Profundidad cómoda y controlada"],["Peso muerto rumano",3,"8-10","Siente el estiramiento"],["Prensa de piernas",3,"10-12","Pies a la altura de los hombros"],["Curl femoral",3,"10-12","Sin despegar la cadera"],["Elevación de talones",4,"12-15","Pausa arriba"],["Plancha",3,"30-45 s","Cuerpo en línea recta"]]],
+empuje:["Empuje",[["Press banca",4,"6-8","Escápulas juntas"],["Press inclinado con mancuernas",3,"8-10","Baja controlado"],["Press militar",3,"8-10","Abdomen apretado"],["Elevaciones laterales",3,"12-15","Sin impulso"],["Extensión de tríceps",3,"10-12","Codos quietos"],["Fondos",2,"al fallo técnico","Inclina el torso hacia delante"]]],
+tiron:["Tirón",[["Dominadas o jalón al pecho",4,"6-10","Lleva el pecho a la barra"],["Remo con barra",4,"6-8","Espalda neutra"],["Remo en polea baja",3,"10-12","Pausa de 1 s al final"],["Face pull",3,"12-15","Hombros atrás"],["Curl con barra",3,"8-10","Sin balancear"],["Curl martillo",2,"10-12","Codos pegados"]]],
+brazos:["Brazos y core",[["Press cerrado",3,"8-10","Codos cerca del cuerpo"],["Curl inclinado",3,"10-12","Estira bien arriba"],["Extensión sobre la cabeza",3,"10-12","Codos apuntando al frente"],["Curl martillo",3,"10-12","Control"],["Elevaciones laterales",3,"15","Ligero, técnica limpia"],["Plancha",3,"45 s","Glúteos apretados"]]]
+};
+var SPLIT={2:["fullA","fullB"],3:["fullA","fullB","fullC"],4:["torso","pierna","torso","pierna"],5:["empuje","tiron","pierna","torso","brazos"],6:["empuje","tiron","pierna","empuje","tiron","pierna"]};
+
+var S={xp:0,peso:60,meta:68,mins:60,dias:{0:"18:00",2:"18:00",4:"18:00"},done:{},log:[]};
+try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&typeof p==="object")S=Object.assign(S,p)}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function $(id){return document.getElementById(id)}
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function fmt(n){return n.toLocaleString("es",{maximumFractionDigits:1})}
+
+function bindInputs(){
+ [["peso"],["meta"],["mins"]].forEach(function(a){
+  var el=$(a[0]);el.value=S[a[0]];
+  el.addEventListener("change",function(){var v=parseFloat(el.value);if(v>0){S[a[0]]=v;save();render()}else el.value=S[a[0]]});
+ });
+}
+function selected(){return Object.keys(S.dias).map(Number).sort(function(a,b){return a-b})}
+
+function renderDays(){
+ var box=$("days");box.innerHTML="";
+ DN.forEach(function(n,i){
+  var b=document.createElement("button");b.type="button";b.textContent=n;
+  b.setAttribute("aria-pressed",S.dias[i]!==undefined);
+  b.addEventListener("click",function(){
+   if(S.dias[i]!==undefined)delete S.dias[i];else S.dias[i]="18:00";
+   save();render();
+  });
+  box.appendChild(b);
+ });
+ var t=$("times");t.innerHTML="";
+ selected().forEach(function(d){
+  var w=document.createElement("div");
+  w.innerHTML='<label for="t'+d+'">'+DN[d]+' · hora</label><input type="time" id="t'+d+'" value="'+esc(S.dias[d])+'">';
+  w.querySelector("input").addEventListener("change",function(e){S.dias[d]=e.target.value||"18:00";save()});
+  t.appendChild(w);
+ });
+ var n=selected().length,note=$("weekNote");
+ if(n<2)note.innerHTML='<span class="warn">Elige al menos 2 días para generar la rutina.</span>';
+ else if(n>6)note.textContent="";
+ else{
+  var hrs=(n*S.mins/60);
+  note.textContent=n+" días, unas "+fmt(hrs)+" h de entrenamiento a la semana. "+(n<=3?"Cada sesión trabaja todo el cuerpo: ideal para empezar.":n===4?"División torso y pierna: cada músculo se entrena 2 veces por semana.":n===5?"División por grupos con un día extra de brazos y core.":"Empuje, tirón y pierna dos veces por semana: volumen alto, necesitas dormir y comer bien.");
+ }
+}
+
+function sessionFor(key){
+ // recorta ejercicios para que quepan en los minutos disponibles
+ var list=EX[key][1],out=[],t=8; // 8 min de calentamiento
+ for(var i=0;i<list.length;i++){
+  var c=list[i][1]*2.8+1;
+  if(t+c>S.mins&&out.length>=3)break;
+  out.push(list[i]);t+=c;
+ }
+ return{name:EX[key][0],ex:out,time:Math.round(t)};
+}
+
+function renderRoutine(){
+ var box=$("routine");box.innerHTML="";
+ var ds=selected();
+ if(ds.length<2||ds.length>6){box.innerHTML='<p class="note">Selecciona entre 2 y 6 días en el paso anterior.</p>';return}
+ var plan=SPLIT[ds.length];
+ ds.forEach(function(d,i){
+  var s=sessionFor(plan[i]);
+  var sid=d+"-"+plan[i]+"-"+i;
+  var doneCount=s.ex.filter(function(_,j){return S.done[sid+"-"+j]}).length;
+  var card=document.createElement("div");
+  card.className="card"+(doneCount===s.ex.length?" done":"");
+  var h='<h3>'+DN[d]+' · '+esc(s.name)+'</h3><p class="meta">'+esc(S.dias[d])+' · unos '+s.time+' min · '+doneCount+'/'+s.ex.length+' hechos</p>';
+  s.ex.forEach(function(e,j){
+   var id=sid+"-"+j;
+   h+='<label class="ex" style="color:var(--ink);font-size:1rem;margin:0"><input type="checkbox" data-k="'+id+'"'+(S.done[id]?" checked":"")+'><span><b>'+esc(e[0])+'</b> · '+e[1]+' × '+esc(e[2])+'<small>'+esc(e[3])+'</small></span></label>';
+  });
+  h+='<p class="note">Calentamiento: 5 min de cardio suave y 2 series ligeras del primer ejercicio. Descansa 2 min en los ejercicios pesados.</p>';
+  card.innerHTML=h;
+  card.querySelectorAll("input").forEach(function(c){
+   c.addEventListener("change",function(){S.done[c.dataset.k]=c.checked;if(!c.checked)delete S.done[c.dataset.k];save();renderRoutine()});
+  });
+  box.appendChild(card);
+ });
+}
+
+function renderStats(){
+ var kcal=Math.round((S.peso*33+300)/50)*50;
+ var prot=Math.round(S.peso*1.8);
+ var weeks=S.meta>S.peso?Math.ceil((S.meta-S.peso)/0.35):0;
+ var last=S.log.length?S.log[S.log.length-1].w:S.peso;
+ $("stats").innerHTML=
+  '<div class="stat"><strong>'+kcal+' kcal</strong>Calorías al día con superávit suave</div>'+
+  '<div class="stat"><strong>'+prot+' g</strong>Proteína al día (1,8 g por kg)</div>'+
+  '<div class="stat"><strong>'+(weeks?weeks+" semanas":"Meta lograda")+'</strong>'+(weeks?'Tiempo estimado hasta '+fmt(S.meta)+' kg':'Ya estás en tu peso meta o por encima')+'</div>'+
+  '<div class="stat"><strong>'+fmt(last-S.peso)+' kg</strong>Cambio desde tu peso inicial</div>';
+}
+
+function renderLog(){
+ var L=S.log;
+ var list=$("logList");list.innerHTML="";
+ L.slice(-8).forEach(function(e){var s=document.createElement("span");s.textContent=e.d+" · "+fmt(e.w)+" kg";list.appendChild(s)});
+ var c=$("chart");
+ if(L.length<2){c.innerHTML='<p class="note">Guarda al menos dos pesos para ver la gráfica.</p>';return}
+ var W=640,H=220,P=34,ws=L.map(function(e){return e.w});
+ var mn=Math.min.apply(null,ws)-1,mx=Math.max.apply(null,ws.concat([S.meta]))+1;
+ function X(i){return P+i*(W-2*P)/(L.length-1)}
+ function Y(v){return H-P-(v-mn)*(H-2*P)/(mx-mn)}
+ var pts=L.map(function(e,i){return X(i)+","+Y(e.w)}).join(" ");
+ var dots=L.map(function(e,i){return '<circle cx="'+X(i)+'" cy="'+Y(e.w)+'" r="4" fill="var(--acc)"/>'}).join("");
+ c.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Gráfica de peso"><line x1="'+P+'" x2="'+(W-P)+'" y1="'+Y(S.meta)+'" y2="'+Y(S.meta)+'" stroke="var(--ok)" stroke-dasharray="5 5"/><text x="'+(W-P)+'" y="'+(Y(S.meta)-6)+'" text-anchor="end" fill="var(--ok)" font-size="13">Meta '+fmt(S.meta)+' kg</text><polyline points="'+pts+'" fill="none" stroke="var(--acc)" stroke-width="3"/>'+dots+'<text x="'+P+'" y="'+(H-8)+'" fill="var(--mute)" font-size="12">'+esc(L[0].d)+'</text><text x="'+(W-P)+'" y="'+(H-8)+'" text-anchor="end" fill="var(--mute)" font-size="12">'+esc(L[L.length-1].d)+'</text></svg>';
+}
+
+function renderXP(){
+ var t=(S.xp||0)+Object.keys(S.done).length*10,lv=Math.floor(t/200)+1,c=t%200;
+ $("xpText").textContent="Nivel "+lv+" · "+t+" XP · cada ejercicio vale 10 XP";
+ $("xpFill").style.width=(c/2)+"%";$("xpBar").setAttribute("aria-valuenow",c);
+}
+function render(){renderXP();renderDays();renderRoutine();renderStats();renderLog()}
+
+$("addLog").addEventListener("click",function(){
+ var v=parseFloat($("logW").value);if(!(v>0))return;
+ var d=new Date().toLocaleDateString("es",{day:"numeric",month:"short"});
+ S.log.push({d:d,w:v});S.peso=S.peso; $("logW").value="";save();render();
+});
+$("resetWeek").addEventListener("click",function(){S.xp=(S.xp||0)+Object.keys(S.done).length*10;S.done={};save();render()});
+
+bindInputs();render();
+})();
+</script>
+</body>
+</html>
