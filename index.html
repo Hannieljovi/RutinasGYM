@@ -54,6 +54,12 @@ ul.tips{margin:0;padding-left:20px}ul.tips li{margin-bottom:8px;max-width:70ch}
 #rest[hidden]{display:none}#rest b{font:700 2.2rem/1 var(--disp);flex:1}
 .sum{border:2px solid var(--ok);border-radius:10px;padding:14px;margin-top:14px}
 .ach{opacity:.45}.ach.on{opacity:1;border-color:var(--ok)}
+details{margin:8px 0;border-top:1px solid var(--line);padding-top:6px}summary{cursor:pointer;color:var(--acc);font-weight:600}details svg{width:100%;max-width:360px;display:block;margin-top:8px}
+.now{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;margin:0 0 4px}.now b{font:700 2.4rem/1 var(--disp);letter-spacing:.04em;color:var(--acc)}.now span{color:var(--mute);text-transform:capitalize}
+#stat{margin:0 0 14px}
+#wel{position:fixed;inset:0;z-index:20;background:rgba(10,14,28,.97);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}#wel[hidden]{display:none}
+.wp{max-width:460px;width:100%;text-align:center}.wp .brand{margin:0 auto 10px}.wp .now{justify-content:center;flex-direction:column;align-items:center;gap:2px}.wp .now b{font-size:3.4rem}.wp label{text-align:left}
+#who{font:600 1.2rem var(--body)}#who button{padding:3px 10px;font-size:.85rem;margin-left:8px}
 </style>
 </head>
 <body>
@@ -78,6 +84,9 @@ ul.tips{margin:0;padding-left:20px}ul.tips li{margin-bottom:8px;max-width:70ch}
 <h1>Hanniel Gamers · Plan de volumen</h1>
 <div class="xp"><p id="xpText"></p><div class="bar" role="progressbar" aria-label="Progreso al siguiente nivel" aria-valuemin="0" aria-valuemax="200" id="xpBar"><i id="xpFill"></i></div></div>
 </header>
+<p id="who" style="margin:0 0 6px"></p>
+<div class="now"><b id="nowT"></b><span id="nowD"></span></div>
+<p id="stat" class="meta"></p>
 <nav role="tablist" id="tabs"></nav>
 
 <section id="t-sess"><h2>Misión de hoy</h2><div id="sess"></div></section>
@@ -85,6 +94,7 @@ ul.tips{margin:0;padding-left:20px}ul.tips li{margin-bottom:8px;max-width:70ch}
 <div id="t-plan">
 <section><h2>Tus stats</h2>
 <div class="grid">
+<div><label for="nm">Tu nombre</label><input id="nm" type="text" maxlength="30" autocomplete="given-name"></div>
 <div><label for="peso">Peso actual (kg)</label><input id="peso" type="number" step="0.1" min="30" max="250"></div>
 <div><label for="meta">Peso meta (kg)</label><input id="meta" type="number" step="0.1" min="30" max="250"></div>
 <div><label for="mins">Minutos por sesión</label><input id="mins" type="number" step="5" min="30" max="150"></div>
@@ -106,6 +116,8 @@ ul.tips{margin:0;padding-left:20px}ul.tips li{margin-bottom:8px;max-width:70ch}
 <section><h2>Biblioteca de ejercicios</h2><p class="note" style="margin:0 0 12px">Cambia el orden, quita o añade ejercicios en cada sesión. Tu historial no se borra.</p><div id="lib"></div></section>
 </div>
 <datalist id="dl"><option value="Sentadilla"><option value="Sentadilla búlgara"><option value="Press banca"><option value="Press inclinado con mancuernas"><option value="Aperturas con mancuernas"><option value="Peso muerto"><option value="Peso muerto rumano"><option value="Remo con barra"><option value="Remo con mancuerna"><option value="Remo en polea baja"><option value="Dominadas"><option value="Jalón al pecho"><option value="Press militar"><option value="Elevaciones laterales"><option value="Face pull"><option value="Fondos"><option value="Curl de bíceps"><option value="Curl martillo"><option value="Extensión de tríceps"><option value="Prensa de piernas"><option value="Zancadas"><option value="Hip thrust"><option value="Curl femoral"><option value="Extensión de cuádriceps"><option value="Elevación de talones"><option value="Encogimientos de hombros"><option value="Plancha"></datalist>
+
+<div id="t-mus"><section><h2>Rutinas por músculo</h2><p class="note" style="margin:0 0 14px">Una rutina enfocada para cada zona. Pulsa «Entrenar ahora» y se abre como misión libre, con registro de pesos, descanso y XP.</p><div class="cards" id="mus"></div></section></div>
 
 <div id="t-prog">
 <section><h2>Progreso</h2><div class="stats" id="pstats"></div></section>
@@ -145,6 +157,8 @@ ul.tips{margin:0;padding-left:20px}ul.tips li{margin-bottom:8px;max-width:70ch}
 </main>
 
 <div id="rest" hidden role="timer" aria-live="off"><span>Descanso</span><b id="restT">0:00</b><button id="r15">+15 s</button><button id="rX" class="main">Listo</button></div>
+
+<div id="wel" role="dialog" aria-modal="true" aria-labelledby="welH" hidden><div class="wp"><div id="welLogo"></div><h2 id="welH"></h2><div class="now"><b id="welT"></b><span id="welD"></span></div><div id="welS"></div><label for="wn">Tu nombre (opcional)</label><input id="wn" maxlength="30" autocomplete="given-name"><p><button class="main" id="welGo">Entrar</button></p></div></div>
 
 <script>
 (function(){
@@ -197,7 +211,7 @@ function renderXP(){
  $("xpText").textContent="Nivel "+lv+" · "+S.xp+" XP";
  $("xpFill").style.width=(c/2)+"%";$("xpBar").setAttribute("aria-valuenow",c);
 }
-var TABS=[["sess","Misión"],["plan","Plan"],["prog","Progreso"],["data","Datos"]],tab="sess";
+var TABS=[["sess","Misión"],["plan","Plan"],["mus","Músculos"],["prog","Progreso"],["data","Datos"]],tab="sess";
 function renderTabs(){
  var n=$("tabs");n.innerHTML="";
  TABS.forEach(function(t){
@@ -248,6 +262,7 @@ function renderPlan(){
 /* Misión (sesión) */
 var names=[];
 function curItem(){
+ if(S.free&&EX[S.free])return{d:-1,key:S.free,id:"free-"+S.free};
  var pl=plan();if(!pl.length)return null;
  if(S.pick==null||S.pick>=pl.length){var t=(new Date().getDay()+6)%7,k=pl.findIndex(function(x){return x.d===t});S.pick=k>=0?k:0}
  return pl[S.pick];
@@ -257,6 +272,8 @@ function renderSession(){
  if(!it){box.innerHTML='<p class="note warn">Elige entre 2 y 6 días en la pestaña Plan.</p>';return}
  var s=sessionFor(it.key),dl=deload(),dr=(S.drafts[it.id]=S.drafts[it.id]||{});names=[];
  var h='<div class="row"><div><label for="pick">Misión</label><select id="pick">'+pl.map(function(x,i){return'<option value="'+i+'"'+(i===S.pick?" selected":"")+'>'+DN[x.d]+' · '+esc(EX[x.key][0])+'</option>'}).join("")+'</select></div><div><label for="restSel">Descanso entre series</label><select id="restSel">'+[60,90,120,180].map(function(v){return'<option value="'+v+'"'+(v===S.rest?" selected":"")+'>'+v+' s</option>'}).join("")+'</select></div></div>';
+ if(S.free)h=h.replace(/<div><label for="pick">.*?<\/select><\/div>/,'<div><p class="meta" style="margin:0 0 6px">Misión libre: <b>'+esc(EX[S.free][0])+'</b></p><button type="button" id="backPlan">Volver a mi plan</button></div>');
+ h+='<p class="meta" style="margin:0 0 10px">Duración estimada: <b>'+s.time+' min</b> · Tiempo transcurrido: <b id="clk">0:00</b></p>';
  if(dl)h+='<p class="note warn" style="margin:0 0 12px">Semana de descarga: menos series y cargas al 90 %. Recupera para romper tus marcas.</p>';
  h+='<div class="cards">';
  s.ex.forEach(function(e,j){
@@ -265,7 +282,7 @@ function renderSession(){
   var arr=dr[name]=dr[name]||[];
   var info=last?"Última vez: "+last.sets.map(function(x){return fmt(x.w)+"×"+x.r}).join(", "):"Primera vez: elige un peso con 2 repeticiones en reserva.";
   if(sg)info+=" · Objetivo: "+fmt(sg.w)+" kg"+(sg.hit?" (subes carga)":"");
-  h+='<div class="card"><h3>'+esc(name)+'</h3><p class="meta">'+n+' × '+esc(e[2])+' · '+esc(e[3])+'</p><p class="meta" style="color:var(--acc)">'+esc(info)+'</p>';
+  h+='<div class="card"><h3>'+esc(name)+'</h3><p class="meta">'+n+' × '+esc(e[2])+' · '+esc(e[3])+'</p><p class="meta" style="color:var(--acc)">'+esc(info)+'</p><details><summary>Ver cómo se hace</summary>'+fig(name)+'</details>';
   for(var i=0;i<n;i++){
    var d=arr[i]=arr[i]||{w:pref,r:"",d:false};
    h+='<div class="set'+(d.d?" ok":"")+'"><span>Serie '+(i+1)+'</span><input inputmode="decimal" aria-label="Peso serie '+(i+1)+' en kg" placeholder="kg" data-j="'+j+'" data-i="'+i+'" data-f="w" value="'+esc(d.w)+'"><input inputmode="numeric" aria-label="'+(tm?"Segundos":"Repeticiones")+' serie '+(i+1)+'" placeholder="'+upper(e[2])+(tm?" s":"")+'" data-j="'+j+'" data-i="'+i+'" data-f="r" value="'+esc(d.r)+'"><button type="button" data-chk data-j="'+j+'" data-i="'+i+'" aria-label="Serie '+(i+1)+' hecha">✓</button></div>';
@@ -287,9 +304,10 @@ function sessEvents(){
    var row=b.parentNode,d=S.drafts[it.id][names[b.dataset.j]][b.dataset.i],ri=row.querySelectorAll("input")[1];
    d.d=!d.d;row.classList.toggle("ok",d.d);
    if(d.d&&!d.r){d.r=ri.placeholder.replace(/\D/g,"");ri.value=d.r}
-   save();if(d.d)startRest(S.rest);return;
+   if(d.d){S.t0=S.t0||{};if(!S.t0[it.id])S.t0[it.id]=Date.now()}save();if(d.d)startRest(S.rest);return;
   }
   if(e.target.id==="fin")finish();
+  if(e.target.id==="backPlan"){S.free=null;save();render()}
  });
  box.addEventListener("change",function(e){
   if(e.target.id==="pick"){S.pick=+e.target.value;save();renderSession()}
@@ -307,10 +325,10 @@ function finish(){
   (S.logs[name]=S.logs[name]||[]).push({t:now,sets:sets});n++;
  });
  if(!n){$("sum").innerHTML='<p class="note warn">Marca al menos una serie como hecha.</p>';return}
- var xp=n*10+pr.length*25;S.xp+=xp;S.prs=(S.prs||0)+pr.length;
- S.hist.push({t:now,name:sessionFor(it.key).name,vol:Math.round(vol),n:n});
- delete S.drafts[it.id];var na=checkAch();save();render();
- $("sum").innerHTML='<div class="sum"><h3>Misión completada</h3><p>'+n+' ejercicios · volumen '+Math.round(vol).toLocaleString("es")+' kg · +'+xp+' XP</p>'+(pr.length?'<p class="pr">Nuevo récord personal: '+pr.map(esc).join(", ")+'</p>':"")+(na.length?'<p class="pr">Logro desbloqueado: '+na.map(esc).join(", ")+' (+'+na.length*50+' XP)</p>':"")+'</div>';
+ var xp=n*10+pr.length*25;S.xp+=xp;S.prs=(S.prs||0)+pr.length;var t0=S.t0&&S.t0[it.id],dur=t0?Math.max(1,Math.round((now-t0)/6e4)):0;
+ S.hist.push({t:now,name:sessionFor(it.key).name,vol:Math.round(vol),n:n,min:dur});
+ delete S.drafts[it.id];if(S.t0)delete S.t0[it.id];var na=checkAch();save();render();
+ $("sum").innerHTML='<div class="sum"><h3>Misión completada</h3><p>'+n+' ejercicios · volumen '+Math.round(vol).toLocaleString("es")+' kg · '+(dur?dur+' min · ':'')+'+'+xp+' XP</p>'+(pr.length?'<p class="pr">Nuevo récord personal: '+pr.map(esc).join(", ")+'</p>':"")+(na.length?'<p class="pr">Logro desbloqueado: '+na.map(esc).join(", ")+' (+'+na.length*50+' XP)</p>':"")+'</div>';
  $("sum").scrollIntoView({behavior:"smooth",block:"center"});
 }
 
@@ -455,8 +473,101 @@ window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();dip
 $("inst").addEventListener("click",function(){if(dip){dip.prompt();dip=null;$("inst").hidden=true}});
 if("serviceWorker" in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register("sw.js").catch(function(){});
 
-function render(){renderXP();renderPlan();renderSession();renderProg();renderLib();renderMeas();renderAch()}
-bindInputs();sessEvents();renderTabs();render();
+function mmss(s){s=Math.max(0,Math.floor(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")}
+function estMin(l){return Math.round(8+l.reduce(function(a,e){return a+e[1]*2.8+1},0))}
+setInterval(function(){var el=$("clk"),it=curItem();if(!el||!it)return;var t=S.t0&&S.t0[it.id];el.textContent=t?mmss((Date.now()-t)/1000):"0:00"},1000);
+var R=function(x,y,w,hh){return'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+hh+'" fill="var(--line)" stroke="none"/>'};
+/* poses: [cabezaX,Y, hombroX,Y, caderaX,Y, codoX,Y, muñecaX,Y, rodillaX,Y, pieX,Y] */
+var PAT={
+curl:[[60,12,60,26,60,52,58,42,60,56,60,70,62,86],[60,12,60,26,60,52,58,42,70,30,60,70,62,86],"b"],
+ohp:[[60,12,60,26,60,52,56,38,62,24,60,70,62,86],[60,12,60,26,60,52,62,14,60,0,60,70,62,86],"b"],
+tri:[[60,12,60,26,60,52,62,12,50,20,60,70,62,86],[60,12,60,26,60,52,62,12,62,-2,60,70,62,86],"b"],
+pull:[[60,12,60,26,60,52,62,12,60,-3,60,70,62,86],[60,12,60,26,60,52,70,36,64,24,60,70,62,86],"b"],
+lat:[[60,12,60,26,60,52,60,40,60,54,60,70,62,86],[60,12,60,26,60,52,66,30,78,26,60,70,62,86],"b"],
+calf:[[60,12,60,26,60,52,60,40,60,54,60,70,62,86],[60,5,60,19,60,45,60,33,60,47,60,63,62,86],""],
+squat:[[60,12,60,26,60,52,54,36,62,26,60,70,62,86],[66,28,62,42,40,66,58,50,66,42,72,68,64,86],"b"],
+hinge:[[60,12,60,26,60,52,60,40,60,54,60,70,62,86],[90,38,80,44,44,52,80,58,78,72,50,70,52,86],"b"],
+row:[[88,32,76,38,42,52,76,54,76,68,46,70,48,86],[88,32,76,38,42,52,62,48,74,56,46,70,48,86],"b"],
+bp:[[18,58,32,58,66,58,40,70,34,56,82,50,90,84],[18,58,32,58,66,58,34,42,34,28,82,50,90,84],"b",R(12,64,70,5)],
+dip:[[60,6,60,20,60,46,64,28,60,36,62,62,52,74],[60,18,60,32,60,60,72,38,60,36,62,76,52,86],"b"],
+hip:[[20,58,30,60,56,76,30,60,30,60,80,62,82,86],[20,58,30,60,58,58,30,60,30,60,82,58,82,86],"h",R(8,64,26,5)],
+crunch:[[18,84,30,84,62,84,24,76,20,80,82,66,92,84],[34,66,38,72,62,84,44,64,36,64,82,66,92,84],""],
+legr:[[60,12,60,26,60,52,64,14,60,-2,60,70,60,86],[60,12,60,26,60,52,64,14,60,-2,80,52,98,52],"b"],
+plank:[[22,58,32,64,64,74,34,84,50,84,82,80,98,86],null,""],
+leg:[[30,14,32,28,32,54,42,42,50,50,60,56,60,82],[30,14,32,28,32,54,42,42,50,50,60,56,88,58],"",R(22,26,4,30)+R(24,56,26,4)]
+};
+var MAP=[[/plancha/i,"plank"],[/fondos/i,"dip"],[/press banca|press inclinado|press en máquina|press cerrado|aperturas/i,"bp"],[/press militar|arnold/i,"ohp"],[/remo/i,"row"],[/dominadas|jalón al pecho|pullover/i,"pull"],[/curl femoral|extensión de cuádriceps|abducción|patada/i,"leg"],[/curl/i,"curl"],[/tríceps|sobre la cabeza/i,"tri"],[/sentadilla|zancadas|prensa/i,"squat"],[/peso muerto|buenos/i,"hinge"],[/hip thrust/i,"hip"],[/crunch|rueda/i,"crunch"],[/elevación de piernas/i,"legr"],[/laterales|pájaros|face pull/i,"lat"],[/talones|granjero/i,"calf"]];
+function frame(p,eq,deco,lab,dx){
+ var o='<g transform="translate('+dx+',0)" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><line x1="0" y1="88" x2="120" y2="88" stroke="var(--line)" stroke-width="2"/>'+(deco||"")
+ +'<line x1="'+p[2]+'" y1="'+p[3]+'" x2="'+p[4]+'" y2="'+p[5]+'"/><polyline points="'+p[4]+','+p[5]+' '+p[10]+','+p[11]+' '+p[12]+','+p[13]+'"/><polyline points="'+p[2]+','+p[3]+' '+p[6]+','+p[7]+' '+p[8]+','+p[9]+'" stroke="var(--acc)"/><circle cx="'+p[0]+'" cy="'+p[1]+'" r="7" fill="var(--panel)"/>';
+ if(eq==="b")o+='<circle cx="'+p[8]+'" cy="'+p[9]+'" r="5" fill="var(--mag)" stroke="none"/>';
+ if(eq==="h")o+='<circle cx="'+p[4]+'" cy="'+(p[5]-6)+'" r="5" fill="var(--mag)" stroke="none"/>';
+ return o+'<text x="60" y="101" text-anchor="middle" fill="var(--mute)" stroke="none" font-size="10">'+lab+'</text></g>';
+}
+function fig(name){
+ var k="calf";for(var i=0;i<MAP.length;i++)if(MAP[i][0].test(name)){k=MAP[i][1];break}
+ var P=PAT[k];
+ return'<svg viewBox="-4 -10 254 116" role="img" aria-label="Cómo se hace: '+esc(name)+'">'+(P[1]?frame(P[0],P[2],P[3],"Inicio",0)+frame(P[1],P[2],P[3],"Final",128):frame(P[0],P[2],P[3],"Mantén la posición",64))+'</svg>';
+}
+var MUS={
+m_pecho:["Pecho","Empuje plano e inclinado. Entrénalo 2 veces por semana con 10 a 16 series en total.",[["Press banca",4,"6-8","Escápulas juntas y baja al pecho controlado"],["Press inclinado con mancuernas",3,"8-10","Banco a 30° y codos a 45° del cuerpo"],["Aperturas con mancuernas",3,"10-12","Estira sin forzar el hombro"],["Fondos para pecho",3,"8-12","Torso inclinado hacia delante"],["Press en máquina",2,"10-12","Termina cerca del fallo"]]],
+m_espalda:["Espalda","Tirones verticales y horizontales para ancho y grosor. 2 veces por semana.",[["Dominadas o jalón al pecho",4,"6-10","Lleva el pecho a la barra"],["Remo con barra",4,"6-8","Espalda neutra, tira hacia el ombligo"],["Remo en polea baja",3,"10-12","Pausa de 1 s al final"],["Remo con mancuerna",3,"10-12","Codo cerca del cuerpo"],["Pullover en polea",2,"12-15","Codos casi estirados"]]],
+m_hombros:["Hombros","Las tres cabezas del deltoides. El hombro lateral y el posterior suelen necesitar más trabajo.",[["Press militar",4,"6-8","Abdomen apretado, sin arquear la espalda"],["Elevaciones laterales",4,"12-15","Sin impulso, codos ligeramente flexionados"],["Pájaros para deltoide posterior",3,"12-15","Pecho apoyado o torso inclinado"],["Face pull",3,"12-15","Hombros atrás y abajo"],["Press Arnold",3,"8-10","Gira controlado"]]],
+m_brazos:["Brazos","Bíceps, tríceps y antebrazo. Los tríceps son cerca de dos tercios del brazo, no los descuides.",[["Curl con barra",3,"8-10","Codos pegados, sin balanceo"],["Curl inclinado",3,"10-12","Estira bien abajo"],["Curl martillo",3,"10-12","Trabaja también el antebrazo"],["Press cerrado",3,"8-10","Codos cerca del cuerpo"],["Extensión sobre la cabeza",3,"10-12","Codos apuntando al frente"],["Jalón de tríceps en polea",3,"10-12","Codos quietos"]]],
+m_abdomen:["Abdomen (cuadritos)","Los cuadritos crecen con el entrenamiento, pero solo se ven al bajar la grasa corporal. Entrena 2 o 3 veces por semana y cuida la comida.",[["Elevación de piernas colgado",3,"10-15","Sube la pelvis, no solo las piernas"],["Crunch en polea",4,"10-15","Redondea el torso, no tires con los brazos"],["Rueda abdominal",3,"8-12","Abdomen apretado, espalda sin hundirse"],["Crunch inverso",3,"12-15","Control en la bajada"],["Plancha",3,"30-45 s","Cuerpo en línea recta"],["Plancha lateral",3,"30 s","Por cada lado"]]],
+m_cuadriceps:["Cuádriceps","Frente del muslo. Profundidad cómoda y rodillas siguiendo la línea de los pies.",[["Sentadilla",4,"6-8","Baja controlado"],["Prensa de piernas",4,"10-12","Sin bloquear las rodillas"],["Sentadilla búlgara",3,"8-10","Torso erguido"],["Extensión de cuádriceps",3,"12-15","Pausa de 1 s arriba"],["Zancadas caminando",2,"12-14","Paso largo"]]],
+m_femorales:["Femorales y glúteos","Cadera y parte posterior del muslo. La bisagra de cadera es la clave.",[["Peso muerto rumano",4,"8-10","Cadera atrás, barra pegada a las piernas"],["Hip thrust",4,"8-10","Pausa de 1 s arriba"],["Curl femoral",3,"10-12","Sin despegar la cadera"],["Patada de glúteo en polea",3,"12-15","Sin arquear la espalda"],["Abducción en máquina",2,"15","Control total"]]],
+m_gemelos:["Gemelos","Músculo duro que responde a rango completo y pausas. Entrénalo 3 veces por semana.",[["Elevación de talones de pie",4,"10-15","Estira abajo, pausa arriba"],["Elevación de talones sentado",4,"12-15","Pausa de 1 s"],["Elevación a una pierna",3,"12-15","Apóyate para equilibrio"],["Elevación en prensa",3,"15","Sin rebotar"]]],
+m_antebrazos:["Antebrazos","Mejoran el agarre y completan el brazo.",[["Curl de muñeca",3,"12-15","Antebrazo apoyado"],["Curl inverso",3,"10-12","Agarre pronado"],["Curl martillo",2,"12","Control"],["Caminata del granjero",3,"30 s","Hombros atrás, agarre firme"]]]
+};
+Object.keys(MUS).forEach(function(k){EX[k]=[MUS[k][0],MUS[k][2]]});
+function renderMus(){
+ var box=$("mus");box.innerHTML="";
+ Object.keys(MUS).forEach(function(k){
+  var c=document.createElement("div");c.className="card";
+  c.innerHTML='<h3>'+esc(MUS[k][0])+'</h3><p class="meta">'+esc(MUS[k][1])+'</p>'+'<p class="meta"><b style="color:var(--ink)">≈ '+estMin(MUS[k][2])+' min</b> · '+MUS[k][2].length+' ejercicios</p>'+MUS[k][2].map(function(e){return'<details><summary>'+esc(e[0])+' <span class="meta">'+e[1]+' × '+esc(e[2])+'</span></summary>'+fig(e[0])+'<p class="meta">'+esc(e[3])+'</p></details>'}).join("")+'<p style="margin:12px 0 0"><button type="button" class="main" data-mus="'+k+'">Entrenar ahora</button></p>';
+  box.appendChild(c);
+ });
+}
+$("mus").addEventListener("click",function(e){
+ var k=e.target.dataset&&e.target.dataset.mus;if(!k)return;
+ S.free=k;tab="sess";save();render();renderTabs();window.scrollTo(0,0);
+});
+function clock(){
+ var d=new Date(),t=d.toLocaleTimeString("es",{hour:"2-digit",minute:"2-digit",second:"2-digit"}),f=d.toLocaleDateString("es",{weekday:"long",day:"numeric",month:"long"});
+ ["nowT","welT"].forEach(function(i){$(i).textContent=t});["nowD","welD"].forEach(function(i){$(i).textContent=f});
+}
+function renderStatus(){
+ var td=(new Date().getDay()+6)%7,tot=selected().length,wk=Date.now()-6048e5,done=0;
+ S.hist.forEach(function(x){if(x.t>wk)done++});
+ var tod=plan().filter(function(x){return x.d===td})[0],lv=Math.floor(S.xp/200)+1,sd=new Date().setHours(0,0,0,0),
+ last=S.hist.length?S.hist[S.hist.length-1].t:0,dd=last?Math.round((sd-new Date(last).setHours(0,0,0,0))/864e5):-1,
+ lt=last?(dd===0?"hoy":dd===1?"ayer":"hace "+dd+" días"):"aún no empiezas",
+ hoy=tod?"Hoy toca "+EX[tod.key][0]+" a las "+S.dias[td]:(tot?"Hoy es día de descanso":"Elige tus días en Plan"),
+ pct=tot?Math.min(100,Math.round(done/tot*100)):0,
+ msg=tot&&done>=tot?"¡Semana completa! Eres una máquina.":(!last||dd>=3?"Una misión hoy y retomas el ritmo.":"Vas bien, sigue así.");
+ $("stat").textContent=hoy+" · Esta semana "+done+" de "+tot+" misiones · Última misión: "+lt;
+ $("welS").innerHTML='<div class="stats" style="margin:14px 0;text-align:left"><div class="stat"><strong>Nivel '+lv+'</strong>'+S.xp+' XP</div><div class="stat"><strong>'+done+' de '+tot+'</strong>Misiones esta semana</div><div class="stat"><strong>'+streak()+'</strong>Semanas de racha</div></div><div class="bar" aria-hidden="true"><i style="width:'+pct+'%"></i></div><p style="margin:12px 0 4px">'+esc(hoy)+'</p><p class="meta" style="margin:0">Última misión: '+lt+'</p><p class="pr">'+msg+'</p>';
+}
+function welcome(){
+ var w=$("wel"),hr=new Date().getHours(),g=hr<12?"Buenos días":hr<19?"Buenas tardes":"Buenas noches";
+ $("welLogo").innerHTML=document.querySelector("header .brand").outerHTML;
+ $("welH").textContent=g+(S.name?", "+S.name:"")+". Bienvenido a Hanniel Gamers";
+ $("wn").value=S.name||"";w.hidden=false;$("welGo").focus();
+ function key(e){if(e.key==="Escape")close()}
+ function close(){var n=$("wn").value.trim().slice(0,30);if(n!==S.name){S.name=n;save();renderWho()}w.hidden=true;document.removeEventListener("keydown",key)}
+ $("welGo").onclick=close;document.addEventListener("keydown",key);
+}
+function renderWho(){
+ var n=S.name,lv=Math.floor(S.xp/200)+1;
+ $("who").innerHTML='Jugador: <b>'+(n?esc(n):"sin nombre")+'</b> · Nivel '+lv+'<button type="button" id="chgName">'+(n?"Cambiar":"Poner nombre")+'</button>';
+ if(document.activeElement!==$("nm"))$("nm").value=n||"";
+}
+$("who").addEventListener("click",function(e){if(e.target.id==="chgName"){tab="plan";renderTabs();$("nm").focus();$("nm").scrollIntoView({block:"center"})}});
+$("nm").addEventListener("change",function(){S.name=$("nm").value.trim().slice(0,30);save();renderWho()});
+setInterval(clock,1000);setInterval(renderStatus,60000);
+function render(){renderXP();renderPlan();renderSession();renderProg();renderLib();renderMeas();renderAch();renderMus();renderStatus();renderWho()}
+bindInputs();sessEvents();renderTabs();render();clock();welcome();
 })();
 </script>
 </body>
