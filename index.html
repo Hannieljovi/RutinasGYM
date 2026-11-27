@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="manifest" href="manifest.webmanifest">
+<meta name="description" content="Hanniel Gamers: planifica tus rutinas, registra tus pesos y sube de nivel mientras ganas masa muscular.">
+<meta property="og:type" content="website"><meta property="og:title" content="Hanniel Gamers · Plan de volumen">
+<meta property="og:description" content="Rutinas, registro de pesos, temporizador de descanso y progreso. Entrena como juegas.">
+<meta property="og:image" content="og-image.png"><meta name="twitter:card" content="summary_large_image">
+<link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hanniel Gamers">
 <meta name="theme-color" content="#0A0E1C">
 <title>Hanniel Gamers · Plan de volumen</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpolygon points='60,8 105,34 105,86 60,112 15,86 15,34' fill='%230E1430' stroke='%2322E3FF' stroke-width='6'/%3E%3Cpath d='M40 46h40a14 14 0 0 1 13 20l-4 8a7 7 0 0 1-12 1l-3-5H46l-3 5a7 7 0 0 1-12-1l-4-8a14 14 0 0 1 13-20z' fill='%238B5CF6'/%3E%3C/svg%3E">
@@ -77,10 +83,13 @@ nav button{flex:1 1 0;min-width:0;flex-direction:column;gap:2px;padding:6px 2px;
 nav button[aria-selected=true]{background:transparent;color:var(--acc)}
 #rest{bottom:calc(78px + env(safe-area-inset-bottom))}body{padding-bottom:110px}}
 details svg.anim{max-width:230px}.demoBtns{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 0}.demoBtns button{padding:5px 12px;font-size:.88rem}.demoBtns a{color:var(--acc);font-size:.9rem}
+input[type=checkbox]{width:auto;accent-color:var(--acc)}.opt{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:.95rem;margin:0}
+footer{color:var(--mute);font-size:.82rem;text-align:center;margin:28px 0 8px;line-height:1.6}#cardOut canvas{width:100%;max-width:320px;border-radius:10px;border:1px solid var(--line)}
 </style>
 </head>
 <body>
 <main>
+<noscript><p style="color:var(--warn)">Esta página necesita JavaScript para funcionar.</p></noscript>
 <header>
 <svg class="brand" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 120" role="img" aria-label="Hanniel Gamers" xmlns:c2pa="http://c2pa.org/manifest">
 <defs>
@@ -138,6 +147,7 @@ details svg.anim{max-width:230px}.demoBtns{display:flex;flex-wrap:wrap;gap:10px;
 <div class="cards" id="routine" style="margin-top:14px"></div>
 </section>
 <section><h2>Biblioteca de ejercicios</h2><p class="note" style="margin:0 0 12px">Cambia el orden, quita o añade ejercicios en cada sesión. Tu historial no se borra.</p><div id="lib"></div></section>
+<section><h2>Calculadora de discos</h2><div class="row"><div><label for="pcT">Peso total que quieres levantar (kg)</label><input id="pcT" type="number" step="0.5" min="0"></div><div><label for="pcB">Barra</label><select id="pcB"><option value="20">Olímpica 20 kg</option><option value="15">Mujer 15 kg</option><option value="10">Corta 10 kg</option></select></div></div><p id="pcO" role="status" style="margin:0"></p><p class="note">Discos usados: 25, 20, 15, 10, 5, 2,5 y 1,25 kg. Se carga lo mismo en cada lado.</p></section>
 </div>
 <datalist id="dl"><option value="Sentadilla"><option value="Sentadilla búlgara"><option value="Press banca"><option value="Press inclinado con mancuernas"><option value="Aperturas con mancuernas"><option value="Peso muerto"><option value="Peso muerto rumano"><option value="Remo con barra"><option value="Remo con mancuerna"><option value="Remo en polea baja"><option value="Dominadas"><option value="Jalón al pecho"><option value="Press militar"><option value="Elevaciones laterales"><option value="Face pull"><option value="Fondos"><option value="Curl de bíceps"><option value="Curl martillo"><option value="Extensión de tríceps"><option value="Prensa de piernas"><option value="Zancadas"><option value="Hip thrust"><option value="Curl femoral"><option value="Extensión de cuádriceps"><option value="Elevación de talones"><option value="Encogimientos de hombros"><option value="Plancha"></datalist>
 
@@ -155,6 +165,7 @@ details svg.anim{max-width:230px}.demoBtns{display:flex;flex-wrap:wrap;gap:10px;
 <div class="cards" id="mlist"></div>
 <p class="note">Mide una vez cada 2 semanas, a la misma hora y sin inflar el músculo. Si la cintura crece mucho más rápido que el brazo, revisa las calorías.</p></section>
 <section><h2>Logros</h2><div class="cards" id="ach"></div></section>
+<section><h2>Comparte tu progreso</h2><p class="note" style="margin:0 0 12px">Crea una imagen con tu nivel y tus números para compartirla.</p><p style="display:flex;gap:10px;flex-wrap:wrap;margin:0"><button class="main" id="cardMk">Crear tarjeta</button><button id="cardSh" hidden>Compartir o descargar</button></p><div id="cardOut" style="margin-top:14px"></div></section>
 <section><h2>Fuerza por ejercicio</h2><div class="cards" id="exprog"></div></section>
 </div>
 
@@ -180,9 +191,10 @@ details svg.anim{max-width:230px}.demoBtns{display:flex;flex-wrap:wrap;gap:10px;
 </ul>
 </section>
 </div>
+<footer>Hanniel Gamers · Plan de volumen · v1.0<br>Esta herramienta no sustituye el consejo de un médico ni de un entrenador. Si sientes dolor, mareo o molestias fuertes, detén el ejercicio.</footer>
 </main>
 
-<div id="rest" hidden role="timer" aria-live="off"><span>Descanso</span><b id="restT">0:00</b><button id="r15">+15 s</button><button id="rX" class="main">Listo</button></div>
+<div id="rest" hidden role="timer" aria-live="off"><span id="restL">Descanso</span><b id="restT">0:00</b><button id="r15">+15 s</button><button id="rX" class="main">Listo</button></div>
 
 <div id="toasts" aria-live="polite"></div>
 <div id="onb" role="dialog" aria-modal="true" aria-label="Configuración inicial" hidden><div class="wp"><div id="onbBody"></div></div></div>
@@ -376,6 +388,7 @@ function renderSession(){
  var h='<div class="row"><div><label for="pick">Misión</label><select id="pick">'+pl.map(function(x,i){return'<option value="'+i+'"'+(i===S.pick?" selected":"")+'>'+DN[x.d]+' · '+esc(EX[x.key][0])+'</option>'}).join("")+'</select></div><div><label for="restSel">Descanso entre series</label><select id="restSel">'+[60,90,120,180].map(function(v){return'<option value="'+v+'"'+(v===S.rest?" selected":"")+'>'+v+' s</option>'}).join("")+'</select></div></div>';
  if(S.free)h=h.replace(/<div><label for="pick">.*?<\/select><\/div>/,'<div><p class="meta" style="margin:0 0 6px">Misión libre: <b>'+esc(EX[S.free][0])+'</b></p><button type="button" id="backPlan">Volver a mi plan</button></div>');
  h+='<p class="meta" style="margin:0 0 10px">Duración estimada: <b>'+s.time+' min</b> · Tiempo transcurrido: <b id="clk">0:00</b></p>';
+ h+='<div class="row"><div><label class="opt" for="nt"><input type="checkbox" id="nt"'+(S.notif&&window.Notification&&Notification.permission==="granted"?" checked":"")+'> Notificación del sistema al terminar el descanso</label></div><div><label for="brk">Pausa corta recomendada</label><select id="brk">'+[[0,"Nunca"],[15,"Cada 15 min"],[20,"Cada 20 min"],[30,"Cada 30 min"]].map(function(o){return'<option value="'+o[0]+'"'+(o[0]===(S.brk===undefined?20:S.brk)?" selected":"")+'>'+o[1]+'</option>'}).join("")+'</select></div></div>';
  if(dl)h+='<p class="note warn" style="margin:0 0 12px">Semana de descarga: menos series y cargas al 90 %. Recupera para romper tus marcas.</p>';
  h+='<div class="cards">';
  s.ex.forEach(function(e,j){
@@ -406,7 +419,7 @@ function sessEvents(){
    var row=b.parentNode,d=S.drafts[it.id][names[b.dataset.j]][b.dataset.i],ri=row.querySelectorAll("input")[1];
    d.d=!d.d;row.classList.toggle("ok",d.d);
    if(d.d&&!d.r){d.r=ri.placeholder.replace(/\D/g,"");ri.value=d.r}
-   if(d.d){S.t0=S.t0||{};if(!S.t0[it.id])S.t0[it.id]=Date.now()}save();if(d.d)startRest(S.rest);return;
+   if(d.d){S.t0=S.t0||{};if(!S.t0[it.id])S.t0[it.id]=Date.now();wake(true)}save();if(d.d){startRest(S.rest);toast("Serie hecha. Descansa "+S.rest+" s")}return;
   }
   if(e.target.id==="fin")finish();
   if(e.target.id==="backPlan"){S.free=null;save();render()}
@@ -414,6 +427,14 @@ function sessEvents(){
  box.addEventListener("change",function(e){
   if(e.target.id==="pick"){S.pick=+e.target.value;save();renderSession()}
   if(e.target.id==="restSel"){S.rest=+e.target.value;save()}
+  if(e.target.id==="brk"){S.brk=+e.target.value;save()}
+  if(e.target.id==="nt"){
+   var cb=e.target;
+   if(!cb.checked){S.notif=false;save();return}
+   if(!window.Notification){toast("Tu navegador no admite notificaciones");cb.checked=false;return}
+   var ok=function(p){S.notif=p==="granted";cb.checked=S.notif;save();toast(S.notif?"Notificaciones activadas":"Permiso denegado: usaré avisos dentro de la página")};
+   if(Notification.permission==="granted")ok("granted");else Notification.requestPermission().then(ok);
+  }
  });
 }
 function finish(){
@@ -429,7 +450,7 @@ function finish(){
  if(!n){$("sum").innerHTML='<p class="note warn">Marca al menos una serie como hecha.</p>';return}
  var lv0=Math.floor(S.xp/200),xp=n*10+pr.length*25;S.xp+=xp;S.prs=(S.prs||0)+pr.length;var t0=S.t0&&S.t0[it.id],dur=t0?Math.max(1,Math.round((now-t0)/6e4)):0;
  S.hist.push({t:now,name:sessionFor(it.key).name,vol:Math.round(vol),n:n,min:dur});
- delete S.drafts[it.id];if(S.t0)delete S.t0[it.id];var na=checkAch();
+ delete S.drafts[it.id];if(S.t0)delete S.t0[it.id];wake(false);var na=checkAch();
  if(Math.floor(S.xp/200)>lv0)toast("¡Subiste al nivel "+(Math.floor(S.xp/200)+1)+"!");
  na.forEach(function(a){toast("Logro desbloqueado: "+a)});save();render();
  $("sum").innerHTML='<div class="sum"><h3>Misión completada</h3><p>'+n+' ejercicios · volumen '+Math.round(vol).toLocaleString("es")+' kg · '+(dur?dur+' min · ':'')+'+'+xp+' XP</p>'+(pr.length?'<p class="pr">Nuevo récord personal: '+pr.map(esc).join(", ")+'</p>':"")+(na.length?'<p class="pr">Logro desbloqueado: '+na.map(esc).join(", ")+' (+'+na.length*50+' XP)</p>':"")+'</div>';
@@ -441,10 +462,11 @@ var rEnd=0,rInt=null;
 function beep(){try{var c=new(window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator();o.frequency.value=880;o.connect(c.destination);o.start();o.stop(c.currentTime+.3)}catch(e){}try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(e){}}
 function tick(){
  var left=Math.ceil((rEnd-Date.now())/1000);
- if(left<=0){clearInterval(rInt);rInt=null;beep();$("rest").hidden=true;return}
+ if(left<=0){clearInterval(rInt);rInt=null;beep();$("rest").hidden=true;notify(restLab==="Pausa corta"?"Pausa terminada":"Descanso terminado","Vamos, sigue con tu siguiente serie.");return}
  $("restT").textContent=Math.floor(left/60)+":"+String(left%60).padStart(2,"0");
 }
-function startRest(sec){rEnd=Date.now()+sec*1000;$("rest").hidden=false;if(!rInt)rInt=setInterval(tick,250);tick()}
+var restLab="Descanso";
+function startRest(sec,lab){restLab=lab||"Descanso";$("restL").textContent=restLab;rEnd=Date.now()+sec*1000;$("rest").hidden=false;if(!rInt)rInt=setInterval(tick,250);tick()}
 $("r15").addEventListener("click",function(){rEnd+=15000;tick()});
 $("rX").addEventListener("click",function(){clearInterval(rInt);rInt=null;$("rest").hidden=true});
 
@@ -771,6 +793,70 @@ function onboard(){
  }
 }
 $("reOnb").addEventListener("click",function(){onboard()});
+function notify(t,b){
+ toast(t+": "+b);
+ if(S.notif&&document.hidden&&window.Notification&&Notification.permission==="granted"){
+  try{new Notification(t,{body:b,icon:"icon.svg",tag:"hg"})}
+  catch(x){try{navigator.serviceWorker.ready.then(function(r){r.showNotification(t,{body:b,icon:"icon.svg",tag:"hg",vibrate:[200,100,200]})})}catch(y){}}
+ }
+}
+var wl=null,brkRef=0;
+function wake(on){try{if(on&&navigator.wakeLock&&!wl){navigator.wakeLock.request("screen").then(function(l){wl=l;l.addEventListener("release",function(){wl=null})}).catch(function(){})}else if(!on&&wl){wl.release();wl=null}}catch(e){}}
+document.addEventListener("visibilitychange",function(){var it=curItem();if(!document.hidden&&it&&S.t0&&S.t0[it.id])wake(true)});
+setInterval(function(){
+ var it=curItem(),m=S.brk===undefined?20:S.brk;
+ if(!it||!m||!S.t0||!S.t0[it.id])return;
+ if(Date.now()-Math.max(S.t0[it.id],brkRef)>=m*6e4){
+  brkRef=Date.now()+12e4;
+  notify("Pausa corta","Llevas "+Math.round((Date.now()-S.t0[it.id])/6e4)+" min entrenando. Descansa 2 min, bebe agua y sigue.");
+  startRest(120,"Pausa corta");
+ }
+},15000);
+function f2(n){return String(Math.round(n*100)/100).replace(".",",")}
+function plates(){
+ var t=parseFloat($("pcT").value),b=+$("pcB").value,o=$("pcO");
+ if(!(t>0)){o.textContent="Escribe el peso total que quieres levantar.";return}
+ var side=(t-b)/2;if(side<0){o.textContent="Ese peso es menor que la barra ("+b+" kg).";return}
+ var r=side,use=[];[25,20,15,10,5,2.5,1.25].forEach(function(p){while(r>=p-1e-9){use.push(p);r-=p}});
+ o.innerHTML=(use.length?"Por cada lado: <b>"+use.map(f2).join(" + ")+" kg</b>":"Solo la barra")+"<br>Peso total: <b>"+f2(b+2*(side-r))+" kg</b>"+(r>1e-6?' <span class="warn">(lo más cercano sin pasarte; faltan '+f2(r*2)+' kg)</span>':"");
+}
+$("pcT").addEventListener("input",plates);$("pcB").addEventListener("change",plates);
+var cardC=null;
+function drawCard(){
+ var C=document.createElement("canvas");C.width=1080;C.height=1350;var x=C.getContext("2d"),F="'Barlow Condensed','Arial Narrow',Impact,sans-serif",B="Barlow,system-ui,sans-serif";
+ var g=x.createLinearGradient(0,0,1080,1350);g.addColorStop(0,"#0A0E1C");g.addColorStop(1,"#1B2456");x.fillStyle=g;x.fillRect(0,0,1080,1350);
+ var ag=x.createLinearGradient(0,0,120,120);ag.addColorStop(0,"#22E3FF");ag.addColorStop(1,"#8B5CF6");
+ x.save();x.translate(90,80);x.scale(3.3,3.3);
+ x.beginPath();[[60,8],[105,34],[105,86],[60,112],[15,86],[15,34]].forEach(function(q,i){if(i)x.lineTo(q[0],q[1]);else x.moveTo(q[0],q[1])});x.closePath();x.fillStyle="#0E1430";x.fill();x.lineWidth=4;x.strokeStyle=ag;x.stroke();
+ x.fillStyle=ag;x.fill(new Path2D("M40 46h40a14 14 0 0 1 13 20l-4 8a7 7 0 0 1-12 1l-3-5H46l-3 5a7 7 0 0 1-12-1l-4-8a14 14 0 0 1 13-20z"));
+ x.fillStyle="#0E1430";x.fillRect(40,57,12,4);x.fillRect(44,53,4,12);x.beginPath();x.arc(74,56,3.2,0,7);x.fill();x.beginPath();x.arc(81,62,3.2,0,7);x.fill();x.restore();
+ x.textBaseline="alphabetic";
+ x.font="700 150px "+F;x.fillStyle="#FF3DCB";x.fillText("HANNIEL",506,196);x.fillStyle="#fff";x.fillText("HANNIEL",500,190);
+ x.fillStyle="#FF3DCB";x.fillRect(500,214,470,6);x.font="700 96px "+F;x.fillStyle="#22E3FF";x.fillText("GAMERS",500,310);
+ var lv=Math.floor(S.xp/200)+1,gw=S.wlog.length?S.wlog[S.wlog.length-1].w-S.peso:0;
+ x.font="700 120px "+F;x.fillStyle="#EAF0FF";x.fillText(S.name?S.name:"Jugador",90,540);
+ x.font="600 52px "+B;x.fillStyle="#93A0C8";x.fillText("Nivel "+lv+" · "+S.xp+" XP",90,610);
+ var st=[[S.hist.length,"Misiones"],[streak(),"Semanas de racha"],[Math.round(tvol()).toLocaleString("es")+" kg","Volumen total"],[S.prs||0,"Récords personales"],[(gw>=0?"+":"")+f2(gw)+" kg","Cambio de peso"],[Object.keys(S.ach||{}).length,"Logros"]];
+ st.forEach(function(s,i){var bx=90+(i%2)*450,by=670+Math.floor(i/2)*200;
+  x.fillStyle="rgba(255,255,255,.06)";x.strokeStyle="#263059";x.lineWidth=2;
+  x.beginPath();if(x.roundRect)x.roundRect(bx,by,420,172,18);else x.rect(bx,by,420,172);x.fill();x.stroke();
+  x.fillStyle="#fff";x.font="700 78px "+F;x.fillText(String(s[0]),bx+28,by+92);
+  x.fillStyle="#93A0C8";x.font="500 32px "+B;x.fillText(s[1],bx+28,by+138)});
+ x.fillStyle="#93A0C8";x.font="500 30px "+B;x.fillText(new Date().toLocaleDateString("es",{day:"numeric",month:"long",year:"numeric"})+" · Entrena como juegas",90,1290);
+ return C;
+}
+$("cardMk").addEventListener("click",function(){
+ var go=function(){cardC=drawCard();var o=$("cardOut");o.innerHTML="";o.appendChild(cardC);$("cardSh").hidden=false};
+ try{(document.fonts&&document.fonts.load?Promise.all([document.fonts.load("700 80px 'Barlow Condensed'"),document.fonts.load("500 30px Barlow")]):Promise.resolve()).then(go,go)}catch(e){go()}
+});
+$("cardSh").addEventListener("click",function(){
+ if(!cardC)return;
+ cardC.toBlob(function(b){
+  if(!b)return;var f=new File([b],"mi-progreso-hanniel-gamers.png",{type:"image/png"});
+  if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:"Hanniel Gamers"}).catch(function(){});return}
+  var a=document.createElement("a"),u=URL.createObjectURL(b);a.href=u;a.download=f.name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},1000);
+ });
+});
 setInterval(clock,1000);setInterval(renderStatus,60000);
 function render(){renderXP();renderPlan();renderSession();renderProg();renderLib();renderMeas();renderAch();renderMus();renderStatus();renderWho();renderHome()}
 bindInputs();sessEvents();renderTabs();render();clock();(!S.onb&&!S.hist.length&&!S.wlog.length)?onboard():welcome();visitors();
